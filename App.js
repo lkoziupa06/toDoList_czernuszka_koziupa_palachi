@@ -1,7 +1,7 @@
 import { useState, useEffect} from 'react';
 import { StatusBar} from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { guardarTareasEnAsyncStorage, recuperarTareasDeAsyncStorage, addToDo, toggleCompletion, tareaMasRapida, borrarTareas, eliminarTarea} from './services/task-service.js';
 import CustomButton from './components/CustomButton.js';
 
 export default function App() {
@@ -10,81 +10,13 @@ export default function App() {
   const [tareaInput, setTareaInput] = useState('');
 
   useEffect(() => {
-    recuperarTareasDeAsyncStorage();
+    const fetchTareas = async () => {
+      const tareasRecuperadas = await recuperarTareasDeAsyncStorage();
+      setTareas(tareasRecuperadas);
+      setTareasTemporal(tareasRecuperadas);
+    };
+    fetchTareas();
   }, []);
-
-  const guardarTareasEnAsyncStorage = async (tareas) => {
-    try {
-      await AsyncStorage.setItem('tareas', JSON.stringify(tareas));
-    } catch (error) {
-      console.error('Error guardando las tareas en AsyncStorage', error);
-    }
-  };
-
-  const recuperarTareasDeAsyncStorage = async () => {
-    try {
-      const tareasGuardadas = await AsyncStorage.getItem('tareas');
-      if (tareasGuardadas !== null) {
-        setTareas(JSON.parse(tareasGuardadas));
-        setTareasTemporal(JSON.parse(tareasGuardadas));
-      }
-    } catch (error) {
-      console.error('Error recuperando las tareas de AsyncStorage', error);
-    }
-  };
-
-  const addToDo = () => {
-    const tarea = tareaInput.trim();
-    if (tarea !== "") {
-      const tiempo = new Date().getTime();
-      const nuevaTarea = {
-        tarea: tarea,
-        tiempoCreacion: tiempo,
-        completada: false,
-        tiempoFinalizacion: null
-      };
-      
-      const nuevasTareas = [...tareasTemporal, nuevaTarea];
-      setTareasTemporal(nuevasTareas);
-      setTareas(nuevasTareas);
-      setTareaInput('');
-      guardarTareasEnAsyncStorage(nuevasTareas);
-    }
-  };
-
-  const toggleCompletion = (index) => {
-    const updatedTareas = [...tareas];
-    const tarea = updatedTareas[index];
-    tarea.completada = !tarea.completada;
-    if (tarea.completada) {
-      tarea.tiempoFinalizacion = new Date().getTime();
-    }
-    setTareas(updatedTareas);
-    guardarTareasEnAsyncStorage(updatedTareas);
-  };
-
-  const tareaMasRapida = () => {
-    let tareaMasRapida = null;
-    let tiempoMasRapido = Infinity;
-    tareas.forEach(tarea => {
-      if (tarea.completada && tiempoMasRapido > (tarea.tiempoFinalizacion - tarea.tiempoCreacion)) {
-        tareaMasRapida = tarea;
-        tiempoMasRapido = (tarea.tiempoFinalizacion - tarea.tiempoCreacion);
-      }
-    });
-
-    if (tareaMasRapida != null) {
-      Alert.alert("La tarea más rápida fue", tareaMasRapida.tarea);
-    } else {
-      Alert.alert("No hay tareas completas aún");
-    }
-  };
-
-  const borrarTareas = () => {
-    setTareas([]);
-    setTareasTemporal([]);
-    guardarTareasEnAsyncStorage([]);
-  };
 
   return (
     <View style={styles.container}>
@@ -98,9 +30,9 @@ export default function App() {
       />
 
       <View style={styles.buttonContainer}>
-        <CustomButton title="Add Task" onPress={addToDo} />
-        <CustomButton title="View Fastest Task" onPress={tareaMasRapida} />
-        <CustomButton title="Delete All Tasks" onPress={borrarTareas} />
+        <CustomButton title="Add Task" onPress={() => addToDo(tareaInput, tareas, setTareas, setTareasTemporal)} />
+        <CustomButton title="View Fastest Task" onPress={() => tareaMasRapida(tareas)} />
+        <CustomButton title="Delete All Tasks" onPress={() => borrarTareas(setTareas, setTareasTemporal)} />
       </View>
 
       <ScrollView
@@ -109,7 +41,7 @@ export default function App() {
       >
         {tareas.map((tarea, index) => (
           <View key={index} style={styles.task}>
-            <TouchableOpacity onPress={() => toggleCompletion(index)}>
+            <TouchableOpacity onPress={() => toggleCompletion(index, tareas, setTareas)}>
               <Text style={[styles.taskText, tarea.completada && styles.completedTask]}>
                 {tarea.tarea}
               </Text>
@@ -162,6 +94,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     alignItems: 'center', 
+    marginTop: 5,
     paddingVertical: 10,
   },
   task: {
