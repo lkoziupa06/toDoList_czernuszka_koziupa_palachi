@@ -26,7 +26,7 @@ export default function App() {
         { text: "Cancelar", style: "cancel" },
         { text: "Eliminar", onPress: () => {
           if (swipeableRefs.current[index]) {
-            swipeableRefs.current[index].close();
+            swipeableRefs.current[index].close(); // Cierra el Swipeable antes de eliminar
           }
           eliminarTarea(index, tareas, setTareas);
         }}
@@ -65,20 +65,24 @@ export default function App() {
           contentContainerStyle={styles.scrollContainer}
           style={styles.scrollView}
         >
-          {tareas.map((tarea, index) => (
-        <Swipeable
-          key={tarea.tiempoCreacion} // Usa tiempoCreacion como clave única
-          renderRightActions={() => renderRightActions(index)}
-          style={styles.swipeable}
-        >
-        <View style={styles.task}>
-          <TouchableOpacity onPress={() => toggleCompletion(index, tareas, setTareas)}>
-            <Text style={[styles.taskText, tarea.completada && styles.completedTask]}>
-              {tarea.tarea}
-            </Text>
-          </TouchableOpacity>
-        </View>
-  </Swipeable>
+        {tareas.map((tarea, index) => (
+          <Swipeable
+            key={tarea.tiempoCreacion} // Usa tiempoCreacion como clave única
+            ref={ref => swipeableRefs.current[index] = ref} // Asigna la referencia
+            renderRightActions={() => renderRightActions(index)}
+            style={styles.swipeable}
+          >
+            <View style={styles.task}>
+              <TouchableOpacity onPress={() => toggleCompletion(index, tareas, setTareas)}>
+                <Text style={[styles.taskText, tarea.completada && styles.completedTask]}>
+                  {tarea.tarea}
+                </Text>
+              </TouchableOpacity>
+              <Text style={styles.dateText}>
+                {new Date(tarea.tiempoCreacion).toLocaleDateString()}
+              </Text>
+            </View>
+          </Swipeable>
 ))}
         </ScrollView>
 
@@ -161,5 +165,11 @@ const styles = StyleSheet.create({
     width: '100%', 
     paddingHorizontal: 0, 
     paddingVertical: 0, 
+  },
+  dateText: {
+    fontSize: 12,
+    color: 'gray',
+    fontWeight: 'bold',
+    marginLeft: 'auto', // Esto alinea el texto a la derecha
   },
 });
