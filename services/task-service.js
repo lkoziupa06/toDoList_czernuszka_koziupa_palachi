@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
+
 // Función para guardar tareas en AsyncStorage
 export const guardarTareasEnAsyncStorage = async (tareas) => {
   try {
@@ -21,7 +22,7 @@ export const recuperarTareasDeAsyncStorage = async () => {
 };
 
 // Función para añadir una nueva tarea
-export const addToDo = (tareaInput, tareas, setTareas, setTareasTemporal) => {
+export const addToDo = (tareaInput, tareas, setTareas, setTareaInput) => {
   const tarea = tareaInput.trim();
   if (tarea !== "") {
     const tiempo = new Date().getTime();
@@ -33,9 +34,11 @@ export const addToDo = (tareaInput, tareas, setTareas, setTareasTemporal) => {
     };
     
     const nuevasTareas = [...tareas, nuevaTarea];
-    setTareasTemporal(nuevasTareas);
     setTareas(nuevasTareas);
     guardarTareasEnAsyncStorage(nuevasTareas);
+    
+    // Limpia el campo de entrada
+    setTareaInput('');
   }
 };
 
@@ -70,15 +73,14 @@ export const tareaMasRapida = (tareas) => {
 };
 
 // Función para borrar todas las tareas
-export const borrarTareas = (setTareas, setTareasTemporal) => {
+export const borrarTareas = (setTareas) => {
   setTareas([]);
-  setTareasTemporal([]);
   guardarTareasEnAsyncStorage([]);
 };
 
-export const eliminarTarea = (index, tareas, setTareas, setTareasTemporal) => {
+// Función para eliminar una tarea
+export const eliminarTarea = (index, tareas, setTareas) => {
   const nuevasTareas = tareas.filter((_, i) => i !== index);
   setTareas(nuevasTareas);
-  setTareasTemporal(nuevasTareas);
   guardarTareasEnAsyncStorage(nuevasTareas);
-};  
+};
