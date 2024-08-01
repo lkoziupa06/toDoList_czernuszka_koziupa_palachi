@@ -1,15 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, Alert, Modal, Pressable, KeyboardAvoidingView, Platform} from 'react-native';
 import { guardarTareasEnAsyncStorage, recuperarTareasDeAsyncStorage, addToDo, toggleCompletion, tareaMasRapida, borrarTareas, eliminarTarea } from './services/task-service.js';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import CustomButton from './components/CustomButton.js';
+import ModalTask from './components/ModalTask.js';
 
 export default function App() {
   const [tareas, setTareas] = useState([]);
   const [tareaInput, setTareaInput] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
   const swipeableRefs = useRef([]); 
-
+  
   useEffect(() => {
     const fetchTareas = async () => {
       const tareasRecuperadas = await recuperarTareasDeAsyncStorage();
@@ -47,20 +49,6 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.titleText}>To Do List</Text>
-
-        <TextInput
-          style={styles.textInput}
-          placeholder="Enter your task here"
-          value={tareaInput}
-          onChangeText={setTareaInput}
-        />
-
-        <View style={styles.buttonContainer}>
-          <CustomButton title="Add Task" onPress={() => addToDo(tareaInput, tareas, setTareas, setTareaInput)} />
-          <CustomButton title="View Fastest Task" onPress={() => tareaMasRapida(tareas)} />
-          <CustomButton title="Delete All Tasks" onPress={() => borrarTareas(setTareas)} />
-        </View>
-
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           style={styles.scrollView}
@@ -83,8 +71,22 @@ export default function App() {
               </Text>
             </View>
           </Swipeable>
-))}
+        ))}
         </ScrollView>
+
+        <View style={styles.addButtonContainer}>
+          <CustomButton title="Añadir nueva tarea" onPress={() => setModalVisible(true)} />
+        </View>
+
+        <ModalTask
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          tareaInput={tareaInput}
+          setTareaInput={setTareaInput}
+          addToDo={addToDo}
+          tareas={tareas}
+          setTareas={setTareas}
+        />
 
         <StatusBar style="auto" />
       </View>
@@ -105,22 +107,6 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: 'bold',
     marginBottom: 20,
-  },
-  textInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 0.5,
-    width: '100%',
-    marginBottom: 20,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-  },
-  buttonContainer: {
-    width: '100%',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10, 
   },
   scrollView: {
     flex: 1, 
@@ -171,5 +157,11 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontWeight: 'bold',
     marginLeft: 'auto', // Esto alinea el texto a la derecha
+  },
+  addButtonContainer: {
+    position: 'absolute',
+    bottom: 30,
+    width: '100%',
+    paddingHorizontal: 20,
   },
 });
