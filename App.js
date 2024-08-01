@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert} from 'react-native';
-import { guardarTareasEnAsyncStorage, recuperarTareasDeAsyncStorage, addToDo, toggleCompletion, tareaMasRapida, borrarTareas, eliminarTarea } from './services/task-service.js';
+import { recuperarTareasDeAsyncStorage, addToDo, toggleCompletion, tareaMasRapida, borrarTareas, eliminarTarea } from './services/task-service.js';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import CustomButton from './components/CustomButton.js';
 import ModalTask from './components/ModalTask.js';
-import Tarea from './components/Tarea.js'
+import Task from './components/Task.js'
 
 export default function App() {
   const [tareas, setTareas] = useState([]);
@@ -65,11 +64,11 @@ export default function App() {
                   key={tarea.tiempoCreacion}
                   tarea={tarea}
                   index={index}
-                  toggleCompletion={() => toggleCompletion(index, tareas, setTareas)}
+                  toggleCompletion={toggleCompletion}
                   renderRightActions={renderRightActions}
                   swipeableRefs={swipeableRefs}
                 />
-              ))
+              ))  
             )}
             </ScrollView>
           </View>
@@ -127,35 +126,6 @@ const styles = StyleSheet.create({
     flex: 1, 
     width: '100%',
   },
-  task: {
-    backgroundColor: '#e1e0e0',
-    borderRadius: 5,
-    padding: 10, 
-    width: '100%', 
-    height: 55, 
-    marginVertical: 5, 
-    justifyContent: 'center',
-    flexDirection: 'row', 
-    alignItems: 'center',   
-    shadowColor: '#949494',
-    shadowOffset:  { width: 1, height: 3 },
-    shadowOpacity: 0.56,
-    shadowRadius: 2, 
-  },
-  taskText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'gray',
-  },
-  taskContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  completedTask: {
-    textDecorationLine: 'line-through',
-    color: 'gray',
-  },
   deleteButton: {
     backgroundColor: '#d60000',
     justifyContent: 'center',
@@ -171,24 +141,10 @@ const styles = StyleSheet.create({
     color: '#f4f3f3',
     fontWeight: 'bold',
   },
-  swipeable: {
-    width: '100%', 
-    paddingHorizontal: 0, 
-    paddingVertical: 0, 
-  },
-  dateText: {
-    fontSize: 12,
-    color: 'gray',
-    fontWeight: 'bold',
-    marginLeft: 'auto', // Esto alinea el texto a la derecha
-  },
   addButtonContainer: {
     bottom: 30,
     width: '100%',
     paddingBottom: 25,
-  },
-  icon: {
-    marginRight: 10, // Espacio entre el icono y el texto
   },
   emptyText: {
     fontSize: 18,
