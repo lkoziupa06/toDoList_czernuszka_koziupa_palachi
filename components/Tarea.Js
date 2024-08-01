@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 
-const Task = ({ tarea, index, toggleCompletion, renderRightActions, swipeableRefs }) => {
+const Tarea = ({ tarea, index, toggleCompletion, renderRightActions, swipeableRefs }) => {
   return (
     <Swipeable
       ref={ref => swipeableRefs.current[index] = ref}
@@ -74,4 +74,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Task;
+export default Tarea;

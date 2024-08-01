@@ -6,6 +6,7 @@ import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler'
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import CustomButton from './components/CustomButton.js';
 import ModalTask from './components/ModalTask.js';
+import Tarea from './components/Tarea.js'
 
 export default function App() {
   const [tareas, setTareas] = useState([]);
