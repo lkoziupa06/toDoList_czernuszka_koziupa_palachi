@@ -59,17 +59,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     modalContent: {
-        backgroundColor: '#D1D3D8',
-        borderRadius: 5,
+        backgroundColor: '#e4e4e6',
+        borderRadius: 20,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
         padding: 25,
-        height: 240,
+        height: 250,
         width: '100%',
         alignItems: 'center',
     },
     modalTitle: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 15,
     },
     keyboardAvoidingView: {
         flex: 1,

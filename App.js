@@ -50,35 +50,40 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.titleText}>To Do List</Text>
+        <Text style={styles.subTittleText}>Czernuszka, Palachi y Koziupa</Text>
           <ScrollView
             contentContainerStyle={styles.scrollContainer}
             style={styles.scrollView}
           >
-          {tareas.map((tarea, index) => (
-            <Swipeable
-              key={tarea.tiempoCreacion} // Usa tiempoCreacion como clave única
-              ref={ref => swipeableRefs.current[index] = ref} // Asigna la referencia
-              renderRightActions={() => renderRightActions(index)}
-              style={styles.swipeable}
-            >
-              <View style={styles.task}>
-                <Fontisto
-                  name={tarea.completada ? 'checkbox-active' : 'checkbox-passive'}
-                  size={20}
-                  color={tarea.completada ? 'green' : 'gray'}
-                  style={styles.icon}
-                />
-                <TouchableOpacity onPress={() => toggleCompletion(index, tareas, setTareas)}>
-                  <Text style={[styles.taskText, tarea.completada && styles.completedTask]}>
-                    {tarea.tarea}
+          {tareas.length === 0 ? (
+            <Text style={styles.emptyText}>No hay tareas</Text>
+          ) : (
+            tareas.map((tarea, index) => (
+              <Swipeable
+                key={tarea.tiempoCreacion}
+                ref={ref => swipeableRefs.current[index] = ref}
+                renderRightActions={() => renderRightActions(index)}
+                style={styles.swipeable}
+              >
+                <View style={styles.task}>
+                  <Fontisto
+                    name={tarea.completada ? 'checkbox-active' : 'checkbox-passive'}
+                    size={20}
+                    color={tarea.completada ? 'green' : 'gray'}
+                    style={styles.icon}
+                  />
+                  <TouchableOpacity onPress={() => toggleCompletion(index, tareas, setTareas)} style={styles.taskContent}>
+                    <Text style={[styles.taskText, tarea.completada && styles.completedTask]}>
+                      {tarea.tarea.length > 20 ? `${tarea.tarea.substring(0, 20)}...` : tarea.tarea}
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={styles.dateText}>
+                    {new Date(tarea.tiempoCreacion).toLocaleDateString()}
                   </Text>
-                </TouchableOpacity>
-                <Text style={styles.dateText}>
-                  {new Date(tarea.tiempoCreacion).toLocaleDateString()}
-                </Text>
-              </View>
-            </Swipeable>
-          ))}
+                </View>
+              </Swipeable>
+            ))
+          )}
           </ScrollView>
 
         <View style={styles.addButtonContainer}>
@@ -105,7 +110,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f2f2',
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 80,
@@ -114,6 +119,12 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 36,
     fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subTittleText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'grey',
     marginBottom: 20,
   },
   scrollView: {
@@ -124,7 +135,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   task: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#e1e0e0',
     borderRadius: 5,
     padding: 10, 
     width: '100%', 
@@ -133,6 +144,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row', 
     alignItems: 'center', 
+    shadowColor: '#949494',
+    shadowOffset:  { width: 1, height: 3 },
+    shadowOpacity: 0.56,
+    shadowRadius: 2, 
   },
   taskText: {
     fontSize: 16,
@@ -149,6 +164,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 5, 
     borderRadius: 5,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
     width: 100,
     height: 55,
   },
@@ -176,4 +193,10 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 10, // Espacio entre el icono y el texto
   },
+  emptyText: {
+    fontSize: 18,
+    color: 'gray',
+    fontWeight: 'bold', 
+    textAlign: 'center',
+  }
 });
