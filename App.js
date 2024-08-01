@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, Alert, Modal, Pressable, KeyboardAvoidingView, Platform} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert} from 'react-native';
 import { guardarTareasEnAsyncStorage, recuperarTareasDeAsyncStorage, addToDo, toggleCompletion, tareaMasRapida, borrarTareas, eliminarTarea } from './services/task-service.js';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import CustomButton from './components/CustomButton.js';
 import ModalTask from './components/ModalTask.js';
 
@@ -49,30 +50,36 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.titleText}>To Do List</Text>
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          style={styles.scrollView}
-        >
-        {tareas.map((tarea, index) => (
-          <Swipeable
-            key={tarea.tiempoCreacion} // Usa tiempoCreacion como clave única
-            ref={ref => swipeableRefs.current[index] = ref} // Asigna la referencia
-            renderRightActions={() => renderRightActions(index)}
-            style={styles.swipeable}
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            style={styles.scrollView}
           >
-            <View style={styles.task}>
-              <TouchableOpacity onPress={() => toggleCompletion(index, tareas, setTareas)}>
-                <Text style={[styles.taskText, tarea.completada && styles.completedTask]}>
-                  {tarea.tarea}
+          {tareas.map((tarea, index) => (
+            <Swipeable
+              key={tarea.tiempoCreacion} // Usa tiempoCreacion como clave única
+              ref={ref => swipeableRefs.current[index] = ref} // Asigna la referencia
+              renderRightActions={() => renderRightActions(index)}
+              style={styles.swipeable}
+            >
+              <View style={styles.task}>
+                <Fontisto
+                  name={tarea.completada ? 'checkbox-active' : 'checkbox-passive'}
+                  size={20}
+                  color={tarea.completada ? 'green' : 'gray'}
+                  style={styles.icon}
+                />
+                <TouchableOpacity onPress={() => toggleCompletion(index, tareas, setTareas)}>
+                  <Text style={[styles.taskText, tarea.completada && styles.completedTask]}>
+                    {tarea.tarea}
+                  </Text>
+                </TouchableOpacity>
+                <Text style={styles.dateText}>
+                  {new Date(tarea.tiempoCreacion).toLocaleDateString()}
                 </Text>
-              </TouchableOpacity>
-              <Text style={styles.dateText}>
-                {new Date(tarea.tiempoCreacion).toLocaleDateString()}
-              </Text>
-            </View>
-          </Swipeable>
-        ))}
-        </ScrollView>
+              </View>
+            </Swipeable>
+          ))}
+          </ScrollView>
 
         <View style={styles.addButtonContainer}>
           <CustomButton title="Añadir nueva tarea" onPress={() => setModalVisible(true)} />
@@ -89,6 +96,7 @@ export default function App() {
         />
 
         <StatusBar style="auto" />
+
       </View>
     </GestureHandlerRootView>
   );
@@ -110,7 +118,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1, 
-    width: '100%', 
   },
   scrollContainer: {
     marginTop: 5,
@@ -123,12 +130,14 @@ const styles = StyleSheet.create({
     width: '100%', 
     height: 55, 
     marginVertical: 5, 
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     flexDirection: 'row', 
     alignItems: 'center', 
   },
   taskText: {
     fontSize: 16,
+    fontWeight: 'bold',
+    color: 'gray',
   },
   completedTask: {
     textDecorationLine: 'line-through',
@@ -162,6 +171,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     width: '100%',
-    paddingHorizontal: 20,
+    paddingBottom: 25,
+  },
+  icon: {
+    marginRight: 10, // Espacio entre el icono y el texto
   },
 });
