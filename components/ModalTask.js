@@ -33,14 +33,14 @@ const ModalTask = ({
             />
             <View style={styles.buttonContainer}>
               <CustomButton
-                title="Add Task"
+                title="Añadir la tarea"
                 onPress={() => {
                   addToDo(tareaInput, tareas, setTareas, setTareaInput);
                   setModalVisible(false);
                 }}
               />
               <CustomButton
-                title="Cancel"
+                title="Cancelar"
                 onPress={() => setModalVisible(false)}
               />
             </View>
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     modalContent: {
-        backgroundColor: '#e4e4e6',
+        backgroundColor: '#d2d2d2',
         borderRadius: 20,
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,

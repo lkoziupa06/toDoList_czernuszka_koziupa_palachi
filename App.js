@@ -51,40 +51,27 @@ export default function App() {
       <View style={styles.container}>
         <Text style={styles.titleText}>To Do List</Text>
         <Text style={styles.subTittleText}>Czernuszka, Palachi y Koziupa</Text>
-          <ScrollView
-            contentContainerStyle={styles.scrollContainer}
-            style={styles.scrollView}
-          >
-          {tareas.length === 0 ? (
-            <Text style={styles.emptyText}>No hay tareas</Text>
-          ) : (
-            tareas.map((tarea, index) => (
-              <Swipeable
-                key={tarea.tiempoCreacion}
-                ref={ref => swipeableRefs.current[index] = ref}
-                renderRightActions={() => renderRightActions(index)}
-                style={styles.swipeable}
-              >
-                <View style={styles.task}>
-                  <Fontisto
-                    name={tarea.completada ? 'checkbox-active' : 'checkbox-passive'}
-                    size={20}
-                    color={tarea.completada ? 'green' : 'gray'}
-                    style={styles.icon}
-                  />
-                  <TouchableOpacity onPress={() => toggleCompletion(index, tareas, setTareas)} style={styles.taskContent}>
-                    <Text style={[styles.taskText, tarea.completada && styles.completedTask]}>
-                      {tarea.tarea.length > 20 ? `${tarea.tarea.substring(0, 20)}...` : tarea.tarea}
-                    </Text>
-                  </TouchableOpacity>
-                  <Text style={styles.dateText}>
-                    {new Date(tarea.tiempoCreacion).toLocaleDateString()}
-                  </Text>
-                </View>
-              </Swipeable>
-            ))
-          )}
-          </ScrollView>
+        <View style={styles.scrollViewContainer}>
+            <ScrollView
+              contentContainerStyle={styles.scrollContainer}
+              style={styles.scrollView}
+            >
+            {tareas.length === 0 ? (
+              <Text style={styles.emptyText}>No hay tareas</Text>
+            ) : (
+              tareas.map((tarea, index) => (
+                <Task
+                  key={tarea.tiempoCreacion}
+                  tarea={tarea}
+                  index={index}
+                  toggleCompletion={() => toggleCompletion(index, tareas, setTareas)}
+                  renderRightActions={renderRightActions}
+                  swipeableRefs={swipeableRefs}
+                />
+              ))
+            )}
+            </ScrollView>
+          </View>
 
         <View style={styles.addButtonContainer}>
           <CustomButton title="Añadir nueva tarea" onPress={() => setModalVisible(true)} />
@@ -129,10 +116,15 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1, 
+    marginBottom: 40,
   },
   scrollContainer: {
     marginTop: 5,
     paddingVertical: 10,
+  },
+  scrollViewContainer: {
+    flex: 1, 
+    width: '100%',
   },
   task: {
     backgroundColor: '#e1e0e0',
@@ -143,7 +135,7 @@ const styles = StyleSheet.create({
     marginVertical: 5, 
     justifyContent: 'center',
     flexDirection: 'row', 
-    alignItems: 'center', 
+    alignItems: 'center',   
     shadowColor: '#949494',
     shadowOffset:  { width: 1, height: 3 },
     shadowOpacity: 0.56,
@@ -154,12 +146,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'gray',
   },
+  taskContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
   completedTask: {
     textDecorationLine: 'line-through',
     color: 'gray',
   },
   deleteButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#d60000',
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 5, 
@@ -170,7 +167,7 @@ const styles = StyleSheet.create({
     height: 55,
   },
   deleteButtonText: {
-    color: 'white',
+    color: '#f4f3f3',
     fontWeight: 'bold',
   },
   swipeable: {
@@ -185,7 +182,6 @@ const styles = StyleSheet.create({
     marginLeft: 'auto', // Esto alinea el texto a la derecha
   },
   addButtonContainer: {
-    position: 'absolute',
     bottom: 30,
     width: '100%',
     paddingBottom: 25,
