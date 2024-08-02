@@ -30,10 +30,14 @@ export const addToDo = (tareaInput, tareas, setTareas, setTareaInput) => {
       tarea: tarea,
       tiempoCreacion: tiempo,
       completada: false,
-      tiempoFinalizacion: null
+      tiempoFinalizacion: null,
+      favorita: false 
     };
     
-    const nuevasTareas = [...tareas, nuevaTarea];
+    const tareasFavoritas = tareas.filter(t => t.favorita);
+    const tareasNoFavoritas = tareas.filter(t => !t.favorita);
+
+    const nuevasTareas = [...tareasFavoritas, nuevaTarea, ...tareasNoFavoritas];
     setTareas(nuevasTareas);
     guardarTareasEnAsyncStorage(nuevasTareas);
     
