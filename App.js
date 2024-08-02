@@ -6,9 +6,7 @@ import { recuperarTareasDeAsyncStorage, addToDo, tareaMasRapida, borrarTareas, e
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import CustomButton from './components/CustomButton.js';
 import ModalTask from './components/ModalTask.js';
-import Task from './components/Task.js'; // Asegúrate de que el import sea correcto
-
-// Define toggleCompletion aquí, asegurando que recibe los argumentos correctos
+import Task from './components/Task.js'; 
 
 export default function App() {
   const [tareas, setTareas] = useState([]);

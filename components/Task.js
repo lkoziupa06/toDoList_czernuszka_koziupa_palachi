@@ -97,19 +97,19 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', // Esto ayuda a que el texto de la fecha se alinee a la derecha
+    justifyContent: 'center', 
     shadowColor: '#C9DCB3',
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.56,
     shadowRadius: 2,
   },
   taskContent: {
-    flexDirection: 'row', // Para alinear icono y texto horizontalmente
+    flexDirection: 'row', 
     alignItems: 'center',
-    flex: 1, // Para que ocupe todo el espacio disponible excepto el espacio del texto de la fecha
+    flex: 1, 
   },
   icon: {
-    marginRight: 10, // Espacio entre el icono y el texto
+    marginRight: 10, 
   },
   taskText: {
     fontSize: 16,
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontWeight: 'bold',
     paddingLeft: 10,
-    marginLeft: 'auto', // Esto alinea el texto a la derecha
+    marginLeft: 'auto', 
   },
   swipeable: {
     width: '100%',
